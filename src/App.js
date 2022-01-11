@@ -1,18 +1,24 @@
 import React, { useState } from "react";
 import "./App.css";
 //Imports of Components
-import ContextValue from "./Components/ContextValue";
-import ContextChild from "./Components/ContextChild";
-import Child from "./Components/Child";
-import List from "./Components/List";
-import ItemCount from "./Components/ItemCount";
-import Uncontrolled from "./Components/Uncontrolled";
-import Controlled from "./Components/Controlled";
-import ColorChangeComponent from "./Components/ColorChangeComponent";
-import DetectHover from "./Components/DetectHoverRender";
-import useHover from "./Components/useHover";
-import NumberCounter from "./Components/NumberCounter";
-import MemoComponent from "./Components/MemoComponent";
+import ContextValue from "./components/ContextValue";
+import ContextChild from "./components/ContextChild";
+import Child from "./components/Child";
+import List from "./components/List";
+import ItemCount from "./components/ItemCount";
+import Uncontrolled from "./components/Uncontrolled";
+import Controlled from "./components/Controlled";
+import ColorChangeComponent from "./components/ColorChangeComponent";
+import DetectHover from "./components/DetectHoverRender";
+import useHover from "./components/useHover";
+import NumberCounter from "./components/NumberCounter";
+import MemoComponent from "./components/MemoComponent";
+import ReducerComponent from "./components/ReducerComponent";
+//Acesssing the data from store
+import { useSelector, useDispatch } from "react-redux";
+//Bind action Creators using redux
+import { bindActionCreators } from "redux";
+import { actionCreators } from "./state";
 //Passes props down to grandchild which reflects the grandparent state data
 const data = [];
 for (let i = 0; i < 7; i++) {
@@ -24,6 +30,14 @@ for (let i = 0; i < 7; i++) {
 
 //Lifting state up allows for state data to be shared with all its children components
 function App() {
+  //useSelector allows to access values over state
+  const account = useSelector((state) => state.account);
+  //useDispatch allows to modify values over states
+  const dispatch = useDispatch();
+  const { depositMoney, withdrawMoney } = bindActionCreators(
+    actionCreators,
+    dispatch
+  );
   const [value, setValue] = useState("");
   const [items, setItems] = useState(data);
   //Created useHover hook
@@ -72,6 +86,25 @@ function App() {
       </div>
       <NumberCounter />
       <MemoComponent />
+      <ReducerComponent />
+      <h4>Current amount in Bank Account:</h4>
+      <h4>(using redux to store global state))</h4>
+      <h4>{account}</h4>
+      <h4>(triggers action creators)</h4>
+      <button
+        onClick={() => {
+          depositMoney(10);
+        }}
+      >
+        Deposit $10
+      </button>
+      <button
+        onClick={() => {
+          withdrawMoney(10);
+        }}
+      >
+        Withdraw $10
+      </button>
     </div>
   );
 }
